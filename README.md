@@ -1,0 +1,5 @@
+# Getting Started
+
+Bloom filter is an efficient data structure for probabilistic set membership testing. It allows you to determine whether an element is a member of a set with a possibility of false positives but no false negatives. This means that if the Bloom filter indicates that an element is not in the set, you can be certain that it is not present. However, if it indicates that an element is in the set, there is a chance that it may not actually be present.
+
+How it achieves it is it hashes the element multiple times and sets bits in a bit array. When checking for membership, it hashes the element again and checks if all the corresponding bits are set. If any of the bits are not set, the element is definitely not in the set. If all bits are set, the element may be in the set (with a certain probability of false positive).
