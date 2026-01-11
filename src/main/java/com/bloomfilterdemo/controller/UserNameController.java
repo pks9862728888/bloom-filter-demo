@@ -21,19 +21,21 @@ public class UserNameController {
   public ResponseEntity<String> saveUserName(
       @RequestBody String username) throws BadRequestException {
     if (usernameService.isUsernameTaken(username)) {
-      log.error("Username {} is already taken", username);
-      throw new BadRequestException("Username is already taken");
-    } else {
-      synchronized (this) {
-        // Double check within synchronized block
-        if (usernameService.isUsernameTaken(username)) {
-          log.error("Username {} is already taken", username);
-          throw new BadRequestException("Username is already taken");
-        }
-        usernameService.saveUserName(username);
-        log.info("Saved username: {}", username);
-      }
-      return ResponseEntity.ok("Username saved successfully");
+      logAndThrowUsernameAlreadyTaken(username);
     }
+    synchronized (this) {
+      // Double check within synchronized block
+      if (usernameService.isUsernameTaken(username)) {
+        logAndThrowUsernameAlreadyTaken(username);
+      }
+      usernameService.saveUserName(username);
+      log.info("Saved username: {}", username);
+    }
+    return ResponseEntity.ok("Username saved successfully");
+  }
+
+  private static void logAndThrowUsernameAlreadyTaken(String username) throws BadRequestException {
+    log.error("Username {} is already taken", username);
+    throw new BadRequestException("Username is already taken");
   }
 }
